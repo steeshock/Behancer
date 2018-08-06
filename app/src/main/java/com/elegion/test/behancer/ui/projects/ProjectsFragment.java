@@ -12,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.elegion.test.behancer.BuildConfig;
 import com.elegion.test.behancer.R;
 import com.elegion.test.behancer.common.PresenterFragment;
@@ -33,7 +35,7 @@ import io.reactivex.schedulers.Schedulers;
  * Created by Vladislav Falzan.
  */
 
-public class ProjectsFragment extends PresenterFragment<ProjectsPresenter>
+public class ProjectsFragment extends PresenterFragment
         implements Refreshable, ProjectsAdapter.OnItemClickListener, ProjectsView {
 
     private RecyclerView mRecyclerView;
@@ -41,7 +43,25 @@ public class ProjectsFragment extends PresenterFragment<ProjectsPresenter>
     private View mErrorView;
     private Storage mStorage;
     private ProjectsAdapter mProjectsAdapter;
-    private ProjectsPresenter mPresenter;
+
+
+
+
+    @InjectPresenter
+    ProjectsPresenter mPresenter;
+
+    @Override
+    public ProjectsPresenter getPresenter() {
+        return mPresenter;
+    }
+
+    @ProvidePresenter
+    ProjectsPresenter providePresenter() {
+        return new ProjectsPresenter(this, mStorage);
+    }
+
+
+
 
     public static ProjectsFragment newInstance() {
         return new ProjectsFragment();
@@ -79,7 +99,6 @@ public class ProjectsFragment extends PresenterFragment<ProjectsPresenter>
             getActivity().setTitle(R.string.projects);
         }
 
-        mPresenter = new ProjectsPresenter(this, mStorage);
         mProjectsAdapter = new ProjectsAdapter(this);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(mProjectsAdapter);
@@ -131,10 +150,6 @@ public class ProjectsFragment extends PresenterFragment<ProjectsPresenter>
         mRecyclerView.setVisibility(View.GONE);
     }
 
-    @Override
-    public ProjectsPresenter getPresenter() {
-        return mPresenter;
-    }
 
     @Override
     public void onRefreshData() {

@@ -30,7 +30,7 @@ import io.reactivex.schedulers.Schedulers;
  * Created by Vladislav Falzan.
  */
 
-public class ProfileFragment extends PresenterFragment<ProfilePresenter>
+public class ProfileFragment extends PresenterFragment
         implements Refreshable, ProfileView {
 
     public static final String PROFILE_KEY = "PROFILE_KEY";
