@@ -12,4 +12,17 @@
         layout="@layout/v_error"
         android:visibility="gone" />
 
+    <Button
+        android:id="@+id/btn_projects"
+        android:text="@string/str_show_projects" style="@style/Widget.AppCompat.Button.Borderless"
+        android:background="@color/colorPrimary"
+        android:textColor="@android:color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="5dp"
+        android:padding="8dp" />
+
 </LinearLayout>

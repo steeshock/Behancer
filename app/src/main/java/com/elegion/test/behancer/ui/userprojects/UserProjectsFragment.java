@@ -1,72 +1,62 @@
-package com.elegion.test.behancer.ui.projects;
+package com.elegion.test.behancer.ui.userprojects;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
-import com.elegion.test.behancer.BuildConfig;
 import com.elegion.test.behancer.R;
 import com.elegion.test.behancer.common.PresenterFragment;
-import com.elegion.test.behancer.data.model.project.Project;
-import com.elegion.test.behancer.ui.profile.ProfileActivity;
-import com.elegion.test.behancer.ui.profile.ProfileFragment;
-import com.elegion.test.behancer.utils.ApiUtils;
 import com.elegion.test.behancer.common.RefreshOwner;
 import com.elegion.test.behancer.common.Refreshable;
 import com.elegion.test.behancer.data.Storage;
+import com.elegion.test.behancer.data.model.project.Project;
+import com.elegion.test.behancer.ui.profile.ProfileFragment;
+
 
 import java.util.List;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
-/**
- * Created by Vladislav Falzan.
- */
 
-public class ProjectsFragment extends PresenterFragment
-        implements Refreshable, ProjectsAdapter.OnItemClickListener, ProjectsView {
+public class UserProjectsFragment extends PresenterFragment implements Refreshable, UserProjectsView {
 
     private RecyclerView mRecyclerView;
     private RefreshOwner mRefreshOwner;
     private View mErrorView;
     private Storage mStorage;
-    private ProjectsAdapter mProjectsAdapter;
-
-
+    private UserProjectsAdapter mUserProjectsAdapter;
+    private String mUsername;
 
 
     @InjectPresenter
-    ProjectsPresenter mPresenter;
+    UserProjectsPresenter mPresenter;
 
     @Override
-    public ProjectsPresenter getPresenter() {
+    public UserProjectsPresenter getPresenter() {
         return mPresenter;
     }
 
     @ProvidePresenter
-    ProjectsPresenter providePresenter() {
-        return new ProjectsPresenter(this, mStorage);
+    UserProjectsPresenter providePresenter() {
+        return new UserProjectsPresenter(this, mStorage);
     }
 
 
 
 
-    public static ProjectsFragment newInstance() {
-        return new ProjectsFragment();
+    public static UserProjectsFragment newInstance(Bundle args) {
+        UserProjectsFragment fragment = new UserProjectsFragment();
+        fragment.setArguments(args);
+
+        return fragment;
     }
 
     @Override
@@ -97,21 +87,25 @@ public class ProjectsFragment extends PresenterFragment
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        if (getArguments() != null) {
+            mUsername = getArguments().getString(ProfileFragment.PROFILE_KEY);
+        }
+
         if (getActivity() != null) {
             getActivity().setTitle(R.string.projects);
         }
 
-        mProjectsAdapter = new ProjectsAdapter(this);
+        mUserProjectsAdapter = new UserProjectsAdapter();
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.setAdapter(mProjectsAdapter);
+        mRecyclerView.setAdapter(mUserProjectsAdapter);
 
         onRefreshData();
     }
 
-    @Override
+/*    @Override
     public void onItemClick(String username) {
         mPresenter.openProfileFragment(username);
-    }
+    }*/
 
     @Override
     public void onDetach() {
@@ -124,17 +118,17 @@ public class ProjectsFragment extends PresenterFragment
     public void showProjects(List<Project> projects) {
         mErrorView.setVisibility(View.GONE);
         mRecyclerView.setVisibility(View.VISIBLE);
-        mProjectsAdapter.addData(projects, true);
+        mUserProjectsAdapter.addData(projects, true);
     }
 
-    @Override
+/*    @Override
     public void openProfileFragment(String username) {
         Intent intent = new Intent(getActivity(), ProfileActivity.class);
         Bundle args = new Bundle();
         args.putString(ProfileFragment.PROFILE_KEY, username);
         intent.putExtra(ProfileActivity.USERNAME_KEY, args);
         startActivity(intent);
-    }
+    }*/
 
     @Override
     public void showRefresh() {
@@ -155,7 +149,6 @@ public class ProjectsFragment extends PresenterFragment
 
     @Override
     public void onRefreshData() {
-        mPresenter.getProjects();
+        mPresenter.getUserProjects(mUsername);
     }
-
 }

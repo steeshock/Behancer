@@ -1,15 +1,19 @@
 package com.elegion.test.behancer.ui.profile;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.elegion.test.behancer.R;
 import com.elegion.test.behancer.common.PresenterFragment;
@@ -18,6 +22,7 @@ import com.elegion.test.behancer.common.Refreshable;
 import com.elegion.test.behancer.data.Storage;
 import com.elegion.test.behancer.data.model.user.User;
 import com.elegion.test.behancer.ui.projects.ProjectsPresenter;
+import com.elegion.test.behancer.ui.userprojects.UserProjectsActivity;
 import com.elegion.test.behancer.utils.ApiUtils;
 import com.elegion.test.behancer.utils.DateUtils;
 import com.squareup.picasso.Picasso;
@@ -25,6 +30,8 @@ import com.squareup.picasso.Picasso;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by Vladislav Falzan.
@@ -46,6 +53,8 @@ public class ProfileFragment extends PresenterFragment
     private TextView mProfileName;
     private TextView mProfileCreatedOn;
     private TextView mProfileLocation;
+
+    private Button mButton;
 
     public static ProfileFragment newInstance(Bundle args) {
         ProfileFragment fragment = new ProfileFragment();
@@ -77,6 +86,7 @@ public class ProfileFragment extends PresenterFragment
         mProfileName = view.findViewById(R.id.tv_display_name_details);
         mProfileCreatedOn = view.findViewById(R.id.tv_created_on_details);
         mProfileLocation = view.findViewById(R.id.tv_location_details);
+        mButton = view.findViewById(R.id.btn_projects);
     }
 
     @Override
@@ -93,6 +103,17 @@ public class ProfileFragment extends PresenterFragment
 
         mProfilePresenter = new ProfilePresenter(this, mStorage);
         mProfileView.setVisibility(View.VISIBLE);
+
+        mButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), UserProjectsActivity.class);
+                Bundle args = new Bundle();
+                args.putString(ProfileFragment.PROFILE_KEY, mUsername);
+                intent.putExtra(UserProjectsActivity.USERNAME_KEY, args);
+                startActivity(intent);
+            }
+        });
 
         onRefreshData();
     }
