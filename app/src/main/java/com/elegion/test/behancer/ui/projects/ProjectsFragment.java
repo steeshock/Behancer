@@ -59,7 +59,7 @@ public class ProjectsFragment extends PresenterFragment
 
     @ProvidePresenter
     ProjectsPresenter providePresenter() {
-        return new ProjectsPresenter(this, mStorage);
+        return new ProjectsPresenter(mStorage);
     }
 
 

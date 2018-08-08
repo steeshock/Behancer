@@ -46,7 +46,7 @@ public class UserProjectsFragment extends PresenterFragment implements Refreshab
 
     @ProvidePresenter
     UserProjectsPresenter providePresenter() {
-        return new UserProjectsPresenter(this, mStorage);
+        return new UserProjectsPresenter(mStorage);
     }
 
 
